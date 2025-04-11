@@ -1,0 +1,21 @@
+<root main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <PipelineSequence name="ackermann_pipeline">
+      <!-- Controls how often the tree ticks (Hz) and distance before rechecking goal -->
+      <RateController hz="5.0">
+        <DistanceController distance="0.5">
+          <GoalUpdated />
+        </DistanceController>
+      </RateController>
+
+      <!-- Plan a path using the global planner plugin -->
+      <ComputePathToPose goal="{goal}" path="{path}" planner_id="GridBased"/>
+
+      <!-- Follow the computed path using controller_server -->
+      <FollowPath path="{path}" controller_id="FollowPath"/>
+
+      <!-- Check if we've reached the goal -->
+      <GoalReached />
+    </PipelineSequence>
+  </BehaviorTree>
+</root>
