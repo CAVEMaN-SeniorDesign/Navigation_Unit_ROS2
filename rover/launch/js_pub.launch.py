@@ -20,7 +20,7 @@ def generate_launch_description():
         executable='robot_state_publisher',
         name='robot_state_publisher',
         emulate_tty=True,
-        parameters=[{'use_sim_time': True, 'robot_description': Command(['xacro ', urdf_file])}],
+        parameters=[{'use_sim_time': False, 'robot_description': Command(['xacro ', urdf_file])}],
         output="screen"
     )
     
@@ -29,7 +29,7 @@ def generate_launch_description():
         package='joint_state_publisher',
         executable='joint_state_publisher',
         name='joint_state_publisher',
-        parameters=[{'use_sim_time': True}],
+        parameters=[{'use_sim_time': False}],
         output="screen"
     )
 

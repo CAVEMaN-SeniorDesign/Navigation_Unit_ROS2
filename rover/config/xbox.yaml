@@ -1,3 +1,7 @@
 joy_node:
   ros__parameters:
-    autorepeat_rate: 100.0
+    autorepeat_rate: 200.0
+
+joy_linux:
+  ros__parameters:
+    autorepeat_rate: 200.0

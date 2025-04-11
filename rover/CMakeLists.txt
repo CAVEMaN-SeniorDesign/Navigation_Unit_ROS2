@@ -55,8 +55,10 @@ install(
   DESTINATION share/${PROJECT_NAME}
 )
 
-
-
+install(PROGRAMS
+  src/fake_imu.py
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 
 
