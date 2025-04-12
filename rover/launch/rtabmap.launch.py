@@ -40,7 +40,8 @@ def generate_launch_description():
           'subscribe_depth':True,
           'subscribe_odom_info':True,
           'approx_sync':False,
-          'wait_imu_to_init':False}]
+          'wait_imu_to_init':False,
+          'pointcloud.enable':True}]
 
     remappings=[
           ('rgb/image', '/camera/camera/color/image_raw'),
