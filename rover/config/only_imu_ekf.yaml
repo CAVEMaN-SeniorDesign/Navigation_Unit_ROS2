@@ -22,7 +22,7 @@ ekf_filter_node:
 
     imu0_differential: false # false fuses the pose directly
     imu0_relative: true # treat imu as relative change from initial pose v.s. absolute orientation change from world frame
-    imu0_remove_gravitational_acceleration: false # This would offset the imu readings by gravity
+    imu0_remove_gravitational_acceleration: true # This would offset the imu readings by gravity
     imu0_orientation_covariance: 0.01
     imu0_angular_velocity_covariance: 0.01
     imu0_linear_acceleration_covariance: 100.0  # increasing b/c drift :(
