@@ -1,0 +1,7 @@
+slam_toolbox:
+  ros__parameters:
+    mode: "localization" # no mapping
+    odom_frame: odom_scan
+    map_frame: map
+    base_frame: base_link
+    scan_topic: /scan

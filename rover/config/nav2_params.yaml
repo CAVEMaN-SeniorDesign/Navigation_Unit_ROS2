@@ -171,7 +171,7 @@ local_costmap:
     plugins: ["voxel_layer", "inflation_layer"]
     inflation_layer:
       plugin: "nav2_costmap_2d::InflationLayer"
-      inflation_radius: 0.5
+      inflation_radius: 0.25
       cost_scaling_factor: 7.0
     voxel_layer:
       plugin: "nav2_costmap_2d::VoxelLayer"
@@ -191,7 +191,7 @@ local_costmap:
         topic: /camera/camera/cloud_from_depth
         max_obstacle_height: 2.0
         min_obstacle_height: 0.01
-        obstacle_max_range: 2.5
+        obstacle_max_range: 5.0
         obstacle_min_range: 0.0
         raytrace_max_range: 3.0
         raytrace_min_range: 0.0
@@ -222,7 +222,6 @@ global_costmap:
       origin_z: 0.0
       z_resolution: 0.05
       z_voxels: 16
-      max_obstacle_height: 2.0
       unknown_threshold: 15
       mark_threshold: 0
       observation_sources: pointcloud
@@ -240,9 +239,13 @@ global_costmap:
         data_type: "PointCloud2"
     inflation_layer:
       plugin: "nav2_costmap_2d::InflationLayer"
-      inflation_radius: 0.5
+      inflation_radius: 0.25
       cost_scaling_factor: 7.0
 
+map_server:
+  ros__parameters:
+    yaml_filename: /path/to/blank_map.yaml
+    use_sim_time: false
 
 # This is if we have a pre-made map we can use :)
 # map_server:

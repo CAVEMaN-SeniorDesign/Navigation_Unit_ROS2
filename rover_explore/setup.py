@@ -24,6 +24,7 @@ setup(
     entry_points={
         'console_scripts': [
             'frontier_explorer = rover_explore.scripts.frontier_explorer:main',
+            'empty_map_service = rover_explore.scripts.empty_map_service:main',
         ],
     },
 )
