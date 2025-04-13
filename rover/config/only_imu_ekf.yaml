@@ -2,7 +2,7 @@ ekf_filter_node:
   ros__parameters:
     frequency: 100.0
     sensor_timeout: 0.1
-    two_d_mode: false # we need 3d elevation data
+    two_d_mode: true # we need 3d elevation data
 
     map_frame: map
     odom_frame: odom
@@ -13,25 +13,26 @@ ekf_filter_node:
     publish_acceleration: true
     use_control: false
 
-    imu0: /imu_raw
-    imu0_config: [false, false, false,   # x, y, z position
-                  true,  true,  true,    # roll, pitch, yaw orientation
-                  false, false, false,   # x, y, z linear velocity
-                  false,  false,  false,    # roll, pitch, yaw angular velocity
-                  true,  true,  false]    # x, y, z linear acceleration
+    # imu0: /imu_raw
+    # imu0_config: [false, false, false,   # x, y, z position
+    #               true,  true,  true,    # roll, pitch, yaw orientation
+    #               false, false, false,   # x, y, z linear velocity
+    #               false,  false,  false,    # roll, pitch, yaw angular velocity
+    #               true,  true,  false]    # x, y, z linear acceleration
 
-    imu0_differential: false # false fuses the pose directly
-    imu0_relative: true # treat imu as relative change from initial pose v.s. absolute orientation change from world frame
-    imu0_remove_gravitational_acceleration: true # This would offset the imu readings by gravity
-    imu0_orientation_covariance: 0.01
-    imu0_angular_velocity_covariance: 0.01
-    imu0_linear_acceleration_covariance: 100.0  # increasing b/c drift :(
+    # imu0_differential: false # false fuses the pose directly
+    # imu0_relative: true # treat imu as relative change from initial pose v.s. absolute orientation change from world frame
+    # imu0_remove_gravitational_acceleration: false # This would offset the imu readings by gravity
+    # imu0_orientation_covariance: 0.001
+    # # imu0_angular_velocity_covariance: 0.01
+    # imu0_linear_acceleration_covariance: 100.0  # increasing b/c drift :(
 
     odom0: /odom
     odom0_config: [true, true, true,     # Position (x, y, z)
-                  false, false, false,   # Orientation (use IMU instead)
+                  true, true, true,   # Orientation (use IMU instead)
                   true, true, true,     # Linear velocity (x, y)
-                  false, false, false,   # Angular velocity
-                  true, true, true]   # Acceleration
+                  true, true, true,   # Angular velocity
+                  true, true, true]   # Linear Acceleration
+    odom0_angular_velocity_covariance: 0.01
     odom0_differential: false
     odom0_relative: true

@@ -11,14 +11,6 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
     autostart = LaunchConfiguration('autostart')
     nav2_params = os.path.join(get_package_share_directory("rover"), 'config', 'nav2_params.yaml')
-
-    # Nav2 = Node(
-    #     package='nav2_bringup',
-    #     executable='bringup_launch.py',
-    #     output='screen',
-    #     parameters=[nav2_params],
-    #     arguments=['--ros-args', '--params-file', nav2_params]
-    # )
     
     Nav2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([

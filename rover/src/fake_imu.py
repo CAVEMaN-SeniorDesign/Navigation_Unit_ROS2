@@ -16,9 +16,9 @@ class FakeIMUPublisher(Node):
         imu_msg = Imu()
 
         # Simulated small noise for a stationary IMU
-        imu_msg.linear_acceleration.x = np.random.normal(0.0, 0.02)
-        imu_msg.linear_acceleration.y = np.random.normal(0.0, 0.02)
-        imu_msg.linear_acceleration.z = np.random.normal(0.0, 0.02)
+        imu_msg.linear_acceleration.x = np.random.normal(0.0, 0.001)
+        imu_msg.linear_acceleration.y = np.random.normal(0.0, 0.001)
+        imu_msg.linear_acceleration.z = np.random.normal(0.0, 0.001)
 
         imu_msg.angular_velocity.x = np.random.normal(0.0, 0.001)
         imu_msg.angular_velocity.y = np.random.normal(0.0, 0.001)
