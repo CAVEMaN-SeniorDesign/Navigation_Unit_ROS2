@@ -21,6 +21,9 @@ find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Encoders.msg"
+  "msg/Airquality.msg"
+  "msg/Speakmovement.msg"
+
  )
 ament_export_dependencies(rosidl_default_runtime)
 

@@ -1,0 +1,3 @@
+uint32 dust_ug_per_m3
+uint32 gas_ppm
+float64 temperature_celsius
