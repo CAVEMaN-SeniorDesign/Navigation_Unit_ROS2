@@ -7,7 +7,7 @@ ekf_filter_node:
     map_frame: map
     odom_frame: odom
     base_link_frame: base_link
-    world_frame: odom  
+    world_frame: odom
 
     publish_tf: true
     publish_acceleration: false
@@ -15,10 +15,10 @@ ekf_filter_node:
 
     odom0: /odom
     odom0_config: [true, true, true,   # Position (x, y, z)
-                   true, true, true,   # Orientation (roll, pitch, yaw), should consider disabling pitch as it seems to drift the most
+                   true, false, true,   # Orientation (roll, pitch, yaw), should consider disabling pitch as it seems to drift the most
                    true, true, true,   # Linear velocity
                    true, true, true,   # Angular velocity
                    false, false, false]  # Linear Acceleration
 
     odom0_differential: false
-    odom0_relative: false   #
+    odom0_relative: false
