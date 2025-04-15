@@ -11,7 +11,12 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
 
     joy_params = os.path.join(get_package_share_directory('rover'),'config','xbox.yaml')
-    imu_only_ekf_params = os.path.join(get_package_share_directory("rover"), 'config', 'only_imu_ekf.yaml')
+    MAIN_EKF_PARAMS = os.path.join(get_package_share_directory("rover"), 'config', 'only_imu_ekf.yaml')
+
+    VO_only_params = os.path.join(get_package_share_directory("rover"), 'config', 'only_VO.yaml')
+    VIO_params = os.path.join(get_package_share_directory("rover"), 'config', 'only_VIO.yaml')
+
+    MAIN_EKF_PARAMS = VO_only_params
 
     ros_distro = os.environ.get('ROS_DISTRO')
     joy_package = 'joy'
@@ -60,7 +65,7 @@ def generate_launch_description():
         executable='ekf_node',
         name='ekf_filter_node',
         output='screen',
-        parameters=[imu_only_ekf_params],
+        parameters=[MAIN_EKF_PARAMS],
     )
     
     Nav2 = IncludeLaunchDescription(

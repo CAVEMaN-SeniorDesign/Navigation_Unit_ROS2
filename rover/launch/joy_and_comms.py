@@ -28,7 +28,7 @@ def generate_launch_description():
     joy_node = Node(
             package=joy_package,
             executable=joy_node,
-            parameters=[joy_params, {'use_sim_time': use_sim_time}],
+            parameters=[joy_params, {'use_sim_time': False}],
             output="screen",
             arguments=['--ros-args', '--log-level', 'info']
          )

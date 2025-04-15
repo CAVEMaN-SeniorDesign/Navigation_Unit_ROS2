@@ -10,8 +10,7 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
     odom_ekf_params = os.path.join(get_package_share_directory("rover"), 'config', 'odom_ekf.yaml')
     VO_only_params = os.path.join(get_package_share_directory("rover"), 'config', 'only_VO.yaml')
-
-    VIO_params = os.path.join(get_package_share_directory("rover"), 'config', 'VIO.yaml')
+    VIO_params = os.path.join(get_package_share_directory("rover"), 'config', 'only_VIO.yaml')
 
 
     EKF_node = Node(
