@@ -15,10 +15,10 @@ ekf_filter_node:
 
     odom0: /odom
     odom0_config: [true, true, true,   # Position (x, y, z)
-                   true, true, true,   # Orientation
+                   true, true, true,   # Orientation (roll, pitch, yaw), should consider disabling pitch as it seems to drift the most
                    true, true, true,   # Linear velocity
                    true, true, true,   # Angular velocity
-                   false, false, false]  # Linear Acceleration (exclude these!)
+                   false, false, false]  # Linear Acceleration
 
     odom0_differential: false
-    odom0_relative: false   # <- IMPORTANT: use absolute data
+    odom0_relative: false   #

@@ -152,17 +152,19 @@ recoveries_server:
     global_frame: odom
     robot_base_frame: base_link
     transform_timeout: 0.1
-    use_sim_time: true
+    use_sim_time: false
+    speed: -0.4
 
 # Fake maps to use for testing
 local_costmap:
   ros__parameters:
-    footprint: "[[-0.2, -0.1], [-0.2, 0.1], [0.2, 0.1], [0.2, -0.1]]"
+    always_send_full_costmap: True
+    footprint: "[[-0.8, -0.3], [-0.8, 0.3], [0.0, 0.3], [0.0, -0.3]]" #"[[-0.2, -0.3], [-0.2, 0.3], [0.2, 0.3], [0.2, -0.3]]"
     use_sim_time: false
     global_frame: odom
     robot_base_frame: base_link
-    update_frequency: 5.0
-    publish_frequency: 2.0
+    update_frequency: 10.0
+    publish_frequency: 5.0
     resolution: 0.05
     width: 100
     height: 100
@@ -177,24 +179,25 @@ local_costmap:
       plugin: "nav2_costmap_2d::VoxelLayer"
       enabled: true
       footprint_clearing_enabled: true
-      max_obstacle_height: 2.0
+      #MARK: 4/14
+      max_obstacle_height: 1.0 # max_obstacle_height: 1.0 -> 1.0 in attempt to ignore lights
       publish_voxel_map: true
       origin_z: 0.0
       z_resolution: 0.05
       z_voxels: 16
-      max_obstacle_height: 2.0
       unknown_threshold: 15
       mark_threshold: 0
       observation_sources: pointcloud
       combination_method: 1
       pointcloud:  # no frame set, uses frame from message
         topic: /camera/camera/cloud_from_depth
-        max_obstacle_height: 2.0
-        min_obstacle_height: 0.01
+        max_obstacle_height: 1.0 # 2.0 -> 1.0
+        min_obstacle_height: 0.07
         obstacle_max_range: 5.0
         obstacle_min_range: 0.0
         raytrace_max_range: 3.0
         raytrace_min_range: 0.0
+        observation_persistence: 2.0
         clearing: true
         marking: true
         data_type: "PointCloud2"
@@ -202,22 +205,23 @@ local_costmap:
 
 global_costmap:
   ros__parameters:
+    always_send_full_costmap: True
     use_sim_time: false
     global_frame: map
     robot_base_frame: base_link
-    update_frequency: 5.0
-    publish_frequency: 2.0
+    update_frequency: 10.0
+    publish_frequency: 5.0
     resolution: 0.05
-    width: 1000
-    height: 1000
-    origin_x: -500
-    origin_y: -500
+    width: 100
+    height: 100
+    origin_x: -50
+    origin_y: -50
     plugins: ["voxel_layer", "inflation_layer"]
     voxel_layer:
       plugin: "nav2_costmap_2d::VoxelLayer"
       enabled: true
       footprint_clearing_enabled: true
-      max_obstacle_height: 2.0
+      max_obstacle_height: 1.0
       publish_voxel_map: true
       origin_z: 0.0
       z_resolution: 0.05
@@ -228,8 +232,8 @@ global_costmap:
       combination_method: 1
       pointcloud:  # no frame set, uses frame from message
         topic: /camera/camera/cloud_from_depth
-        max_obstacle_height: 2.0
-        min_obstacle_height: 0.01
+        max_obstacle_height: 1.0
+        min_obstacle_height: 0.07
         obstacle_max_range: 2.5
         obstacle_min_range: 0.0
         raytrace_max_range: 3.0
@@ -241,6 +245,7 @@ global_costmap:
       plugin: "nav2_costmap_2d::InflationLayer"
       inflation_radius: 0.25
       cost_scaling_factor: 7.0
+
 
 
 
