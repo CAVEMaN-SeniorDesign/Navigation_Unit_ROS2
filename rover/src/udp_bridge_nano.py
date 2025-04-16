@@ -32,17 +32,19 @@ class UdpGatewayNano(Node):
 
     def recv_loop(self):
         while True:
+            data, _ = self.recv_sock.recvfrom(1024)
+            print(f"Received data: {data}")
             try:
-                data, _ = self.recv_sock.recvfrom(1024)
                 msg = json.loads(data.decode())
-                print(f"Received drive command: {msg}")
-                twist = Twist()
-                twist.linear.x = msg.get('linear', 0.0)
-                twist.angular.z = msg.get('angular', 0.0)
-                self.cmd_vel_pub.publish(twist)
+                if msg.get('type') == 'drive_cmd':
+                    print(f"Received drive command: {msg}")
+                    twist = Twist()
+                    twist.linear.x = msg.get('linear', 0.0)
+                    twist.angular.z = msg.get('angular', 0.0)
+                    self.cmd_vel_pub.publish(twist)
             except Exception as e:
                 self.get_logger().warn(f"Error parsing UDP msg: {e}")
-            sleep(0.02)
+                
 
     def imu_callback(self, msg: Imu):
         payload = {

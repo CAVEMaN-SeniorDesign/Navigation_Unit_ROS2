@@ -37,7 +37,6 @@ class UdpGatewayAGX(Node):
             "angular": msg.angular.z
         }
         data = json.dumps(packet).encode()
-        print("cmd_vel sent to nano")
         self.send_sock.sendto(data, (self.nano_ip, self.send_port))
 
     def recv_loop(self):
