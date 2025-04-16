@@ -27,9 +27,9 @@ class UdpGatewayNano(Node):
         threading.Thread(target=self.recv_loop, daemon=True).start()
 
         # Subscribe to sensors
-        self.create_subscription(Imu, '/imu_data', self.imu_callback, 10)
+        self.create_subscription(Imu, '/imu_raw', self.imu_callback, 10)
         self.create_subscription(Encoders, '/encoders', self.encoder_callback, 10)
-        self.create_subscription(Airquality, '/airquality', self.airquality_callback, 10)
+        self.create_subscription(Airquality, '/air_quality', self.airquality_callback, 10)
 
     def recv_loop(self):
         while True:

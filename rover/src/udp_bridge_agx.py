@@ -25,9 +25,9 @@ class UdpGatewayAGX(Node):
         self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_callback, 10)
         threading.Thread(target=self.recv_loop, daemon=True).start()
         
-        self.imu_pub = self.create_publisher(Imu, '/imu/data', 10)
+        self.imu_pub = self.create_publisher(Imu, '/imu_raw', 10)
         self.encoder_pub = self.create_publisher(Encoders, '/encoders', 10)
-        self.airquality_pub = self.create_publisher(Airquality, '/airquality', 10)
+        self.airquality_pub = self.create_publisher(Airquality, '/air_quality', 10)
 
     def cmd_vel_callback(self, msg):
         packet = {
