@@ -32,8 +32,8 @@ class UdpGatewayNano(Node):
 
     def recv_loop(self):
         while True:
-            data, _ = self.recv_sock.recvfrom(1024)
             try:
+                data, _ = self.recv_sock.recvfrom(1024)
                 msg = json.loads(data.decode())
                 if msg.get('type') == 'drive_cmd':
                     print(f"Received drive command: {msg}")
@@ -43,6 +43,7 @@ class UdpGatewayNano(Node):
                     self.cmd_vel_pub.publish(twist)
             except Exception as e:
                 self.get_logger().warn(f"Error parsing UDP msg: {e}")
+            sleep(0.02)
 
     def imu_callback(self, msg: Imu):
         payload = {
@@ -108,6 +109,7 @@ class UdpGatewayNano(Node):
         }
         self.get_logger().info(f"speakMovement data reflected to AGX")
         self.send_sock.sendto(json.dumps(payload).encode(), self.agx_address)
+        
 def main():
     rclpy.init()
     node = UdpGatewayNano()
