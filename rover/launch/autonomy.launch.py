@@ -31,22 +31,6 @@ def generate_launch_description():
 
     else:
         print("ROS_DISTRO environment variable not set.")
-
-    joy_node = Node(
-            package=joy_package,
-            executable=joy_node,
-            parameters=[joy_params, {'use_sim_time': use_sim_time}],
-            output="screen",
-            arguments=['--ros-args', '--log-level', 'info']
-         )
-    
-    UARTcomms = Node(
-            package='rover_comms',
-            executable='rover_comms',
-            name='comms_node',
-            arguments=[],
-            output="screen"
-    )
     
     rs_and_rtabmap = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
