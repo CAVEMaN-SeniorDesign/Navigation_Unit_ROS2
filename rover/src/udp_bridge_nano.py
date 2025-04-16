@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
+import time
 import socket
 import json
 import threading
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
+from sensor_msgs.msg import Imu
+from rover_interfaces.msg import Encoders
+from rover_interfaces.msg import Airquality
+
 
 class UdpGatewayNano(Node):
     def __init__(self):
@@ -16,11 +21,15 @@ class UdpGatewayNano(Node):
         self.recv_sock.bind(('0.0.0.0', 5005))
 
         self.send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.agx_address = ('10.10.10.163', 6006)  # IP of Jetson AGX, as of 4/16/24 is 10.10.10.163
+        self.agx_address = ('10.10.10.163', 6006)  # IP of Jetson AGX
 
-        # Start threads
+        # Start receiving drive commands
         threading.Thread(target=self.recv_loop, daemon=True).start()
-        threading.Thread(target=self.send_loop, daemon=True).start()
+
+        # Subscribe to sensors
+        self.create_subscription(Imu, '/imu_data', self.imu_callback, 10)
+        self.create_subscription(Encoders, '/encoders', self.encoder_callback, 10)
+        self.create_subscription(Airquality, '/airquality', self.airquality_callback, 10)
 
     def recv_loop(self):
         while True:
@@ -36,17 +45,58 @@ class UdpGatewayNano(Node):
             except Exception as e:
                 self.get_logger().warn(f"Error parsing UDP msg: {e}")
 
-    def send_loop(self):
-        import time
-        while True:
-            telemetry = {
-                "type": "status",
-                "battery": 12.5,
-                "dust": 22
+    def imu_callback(self, msg: Imu):
+        payload = {
+            "type": "imu",
+            "orientation": {
+                "x": msg.orientation.x,
+                "y": msg.orientation.y,
+                "z": msg.orientation.z,
+                "w": msg.orientation.w
+            },
+            "angular_velocity": {
+                "x": msg.angular_velocity.x,
+                "y": msg.angular_velocity.y,
+                "z": msg.angular_velocity.z
+            },
+            "linear_acceleration": {
+                "x": msg.linear_acceleration.x,
+                "y": msg.linear_acceleration.y,
+                "z": msg.linear_acceleration.z
             }
-            packet = json.dumps(telemetry).encode()
-            self.send_sock.sendto(packet, self.agx_address)
-            time.sleep(0.5)  
+        }
+        self.send_sock.sendto(json.dumps(payload).encode(), self.agx_address)
+
+    def encoder_callback(self, msg):
+        payload = {
+            "type": "encoder",
+            "wheel_0": {
+                "pulses": msg.total_pulses_encoder_wheel_0,
+                "rate": msg.rate_rads_per_sec_encoder_wheel_0
+            },
+            "wheel_1": {
+                "pulses": msg.total_pulses_encoder_wheel_1,
+                "rate": msg.rate_rads_per_sec_encoder_wheel_1
+            },
+            "wheel_2": {
+                "pulses": msg.total_pulses_encoder_wheel_2,
+                "rate": msg.rate_rads_per_sec_encoder_wheel_2
+            },
+            "wheel_3": {
+                "pulses": msg.total_pulses_encoder_wheel_3,
+                "rate": msg.rate_rads_per_sec_encoder_wheel_3
+            }
+        }
+        self.send_sock.sendto(json.dumps(payload).encode(), self.agx_address)
+        
+    def airquality_callback(self, msg: Airquality):
+        payload = {
+            "type": "airquality",
+            "dust": msg.dust_ug_per_m3,
+            "gas": msg.gas_ppm,
+            "temp": msg.temperature_celsius
+        }
+        self.send_sock.sendto(json.dumps(payload).encode(), self.agx_address)
 
 def main():
     rclpy.init()

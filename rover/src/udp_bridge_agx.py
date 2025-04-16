@@ -5,12 +5,13 @@ import threading
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy  # or any control msg
+from geometry_msgs.msg import Twist
 
 class UdpGatewayAGX(Node):
     def __init__(self):
         super().__init__('udp_gateway_agx')
 
-        self.nano_ip = '10.10.10.1'  # IP of Jetson Nano
+        self.nano_ip = '10.10.10.1'  # IP of Jetson Nano, as of 4/16/24, is 10.10.10.1
         self.send_port = 5005
         self.recv_port = 6006
 
@@ -18,14 +19,14 @@ class UdpGatewayAGX(Node):
         self.recv_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.recv_sock.bind(('0.0.0.0', self.recv_port))
 
-        self.create_subscription(Joy, '/joy', self.joy_callback, 10)
+        self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_callback, 10)
         threading.Thread(target=self.recv_loop, daemon=True).start()
 
-    def joy_callback(self, msg):
+    def cmd_vel_callback(self, msg):
         packet = {
             "type": "drive_cmd",
-            "linear": msg.axes[1],
-            "angular": msg.axes[3]
+            "linear": msg.linear.x,
+            "angular": msg.angular.z
         }
         data = json.dumps(packet).encode()
         self.send_sock.sendto(data, (self.nano_ip, self.send_port))
@@ -35,9 +36,17 @@ class UdpGatewayAGX(Node):
             data, _ = self.recv_sock.recvfrom(1024)
             try:
                 msg = json.loads(data.decode())
-                self.get_logger().info(f"Telemetry: {msg}")
+                msg_type = msg.get("type")
+                if msg_type == "imu":
+                    self.get_logger().info(f"IMU data: {msg['orientation']}")
+                elif msg_type == "encoder":
+                    self.get_logger().info(f"Encoder pulses: {msg['wheel_0']['pulses']}")
+                elif msg_type == "airquality":
+                    self.get_logger().info(f"Dust: {msg['dust']} ug/m3, Gas: {msg['gas']} ppm, Temp: {msg['temp']} °C")
+                else:
+                    self.get_logger().warn(f"Unknown message type: {msg_type}")
             except Exception as e:
-                self.get_logger().warn(f"Error parsing telemetry: {e}")
+                self.get_logger().warn(f"Error parsing messages from Jetson Nano: {e}")
 
 def main():
     rclpy.init()
