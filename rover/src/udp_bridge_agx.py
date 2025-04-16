@@ -22,6 +22,8 @@ class UdpGatewayAGX(Node):
         self.recv_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.recv_sock.bind(('0.0.0.0', self.recv_port))
 
+        self.nano_address = ('10.10.10.1', 5005)
+
         self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_callback, 10)
         threading.Thread(target=self.recv_loop, daemon=True).start()
         
@@ -31,13 +33,13 @@ class UdpGatewayAGX(Node):
         self.speakmovement_pub = self.create_publisher(Speakmovement, '/speak_movement', 200)
 
     def cmd_vel_callback(self, msg):
-        packet = {
+        payload = {
             "type": "drive_cmd",
             "linear": msg.linear.x,
             "angular": msg.angular.z
         }
-        data = json.dumps(packet).encode()
-        self.send_sock.sendto(data, (self.nano_ip, self.send_port))
+        print(f"Sending drive command: {payload}")
+        self.send_sock.sendto(json.dumps(payload).encode(), self.nano_address)
 
     def recv_loop(self):
         while True:
