@@ -35,12 +35,11 @@ class UdpGatewayNano(Node):
             try:
                 data, _ = self.recv_sock.recvfrom(1024)
                 msg = json.loads(data.decode())
-                if msg.get('type') == 'drive_cmd':
-                    print(f"Received drive command: {msg}")
-                    twist = Twist()
-                    twist.linear.x = msg.get('linear', 0.0)
-                    twist.angular.z = msg.get('angular', 0.0)
-                    self.cmd_vel_pub.publish(twist)
+                print(f"Received drive command: {msg}")
+                twist = Twist()
+                twist.linear.x = msg.get('linear', 0.0)
+                twist.angular.z = msg.get('angular', 0.0)
+                self.cmd_vel_pub.publish(twist)
             except Exception as e:
                 self.get_logger().warn(f"Error parsing UDP msg: {e}")
             sleep(0.02)
