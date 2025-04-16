@@ -1,6 +1,6 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, Command
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
@@ -8,6 +8,11 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
+    
+    package_description = "rover_description"
+    print("Fetching URDF ==>")
+    urdf_file = os.path.join(get_package_share_directory(package_description), 'rover_desc', 'rover.xacro')    #xacro_file = "urdfbot.xacro"
+
     use_sim_time = LaunchConfiguration('use_sim_time')
 
     joy_params = os.path.join(get_package_share_directory('rover'),'config','xbox.yaml')
@@ -18,19 +23,24 @@ def generate_launch_description():
 
     MAIN_EKF_PARAMS = VO_only_params
 
-    ros_distro = os.environ.get('ROS_DISTRO')
-    joy_package = 'joy'
-    joy_node = 'joy_node'
+    # Robot State Publisher
+    robot_state_publisher_node = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='robot_state_publisher',
+        emulate_tty=True,
+        parameters=[{'use_sim_time': False, 'robot_description': Command(['xacro ', urdf_file])}],
+        output="screen"
+    )
     
-    if ros_distro and ros_distro == "humble":
-        print(f"ROS 2 distribution: {ros_distro}")
-        joy_package = "joy_linux"
-        joy_node = "joy_linux_node"
-    elif ros_distro:
-        print("ROS_DISTRO not humble, good to use joy_node")
-
-    else:
-        print("ROS_DISTRO environment variable not set.")
+    #joint state publisher
+    joint_state_publisher_node = Node(
+        package='joint_state_publisher',
+        executable='joint_state_publisher',
+        name='joint_state_publisher',
+        parameters=[{'use_sim_time': False}],
+        output="screen"
+    )
     
     rs_and_rtabmap = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
@@ -69,9 +79,8 @@ def generate_launch_description():
             'use_sim_time',
             default_value='false',
             description='Use sim time if true'),
-        
-        joy_node,
-        UARTcomms,
+        robot_state_publisher_node,
+        joint_state_publisher_node,
         rs_and_rtabmap,
         EKF_node,
         Nav2

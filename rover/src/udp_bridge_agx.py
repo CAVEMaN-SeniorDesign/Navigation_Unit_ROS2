@@ -111,7 +111,7 @@ class UdpGatewayAGX(Node):
         speak_movement = Speakmovement()
         speak_movement.linear = msg.get("linear", 0)
         speak_movement.angular = msg.get("angular", 0)
-        self.airquality_pub.publish(speak_movement)
+        self.speakmovement_pub.publish(speak_movement)
 
 
 def main():
