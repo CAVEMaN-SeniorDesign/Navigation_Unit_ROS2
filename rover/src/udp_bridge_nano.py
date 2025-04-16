@@ -16,7 +16,7 @@ class UdpGatewayNano(Node):
         self.recv_sock.bind(('0.0.0.0', 5005))
 
         self.send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.agx_address = ('10.10.10.163', 6006)  # IP of Jetson AGX
+        self.agx_address = ('10.10.10.163', 6006)  # IP of Jetson AGX, as of 4/16/24 is 10.10.10.163
 
         # Start threads
         threading.Thread(target=self.recv_loop, daemon=True).start()
