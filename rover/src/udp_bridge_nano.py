@@ -65,6 +65,7 @@ class UdpGatewayNano(Node):
                 "z": msg.linear_acceleration.z
             }
         }
+        self.get_logger().info(f"IMU data sent to AGX")
         self.send_sock.sendto(json.dumps(payload).encode(), self.agx_address)
 
     def encoder_callback(self, msg):
@@ -87,6 +88,7 @@ class UdpGatewayNano(Node):
                 "rate": msg.rate_rads_per_sec_encoder_wheel_3
             }
         }
+        self.get_logger().info(f"Encoder data sent to AGX")
         self.send_sock.sendto(json.dumps(payload).encode(), self.agx_address)
         
     def airquality_callback(self, msg: Airquality):
@@ -96,6 +98,7 @@ class UdpGatewayNano(Node):
             "gas": msg.gas_ppm,
             "temp": msg.temperature_celsius
         }
+        self.get_logger().info(f"AQ data sent to AGX")
         self.send_sock.sendto(json.dumps(payload).encode(), self.agx_address)
 
 def main():
