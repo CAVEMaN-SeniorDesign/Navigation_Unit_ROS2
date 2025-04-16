@@ -57,6 +57,7 @@ install(
 
 install(PROGRAMS
   src/fake_imu.py
+  src/udp_bridge_agx.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
