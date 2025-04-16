@@ -7,9 +7,7 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Imu
-from rover_interfaces.msg import Encoders
-from rover_interfaces.msg import Airquality
-
+from rover_interfaces.msg import Encoders, Airquality, Speakmovement
 
 class UdpGatewayNano(Node):
     def __init__(self):
@@ -30,6 +28,7 @@ class UdpGatewayNano(Node):
         self.create_subscription(Imu, '/imu_raw', self.imu_callback, 10)
         self.create_subscription(Encoders, '/encoders', self.encoder_callback, 10)
         self.create_subscription(Airquality, '/air_quality', self.airquality_callback, 10)
+        self.create_subscription(Speakmovement, '/speak_movement', self.speak_movement_callback, 10)
 
     def recv_loop(self):
         while True:
@@ -100,7 +99,15 @@ class UdpGatewayNano(Node):
         }
         self.get_logger().info(f"AQ data sent to AGX")
         self.send_sock.sendto(json.dumps(payload).encode(), self.agx_address)
-
+        
+    def speak_movement_callback(self, msg: Speakmovement):
+        payload = {
+            "type": "speakmovement",
+            "linear": msg.linear,
+            "angular": msg.angular,
+        }
+        self.get_logger().info(f"speakMovement data reflected to AGX")
+        self.send_sock.sendto(json.dumps(payload).encode(), self.agx_address)
 def main():
     rclpy.init()
     node = UdpGatewayNano()

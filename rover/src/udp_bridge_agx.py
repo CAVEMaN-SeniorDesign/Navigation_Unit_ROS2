@@ -8,7 +8,7 @@ from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Imu
 from std_msgs.msg import Header
-from rover_interfaces.msg import Encoders, Airquality
+from rover_interfaces.msg import Encoders, Airquality, Speakmovement
 
 class UdpGatewayAGX(Node):
     def __init__(self):
@@ -27,7 +27,8 @@ class UdpGatewayAGX(Node):
         
         self.imu_pub = self.create_publisher(Imu, '/imu_raw', 10)
         self.encoder_pub = self.create_publisher(Encoders, '/encoders', 10)
-        self.airquality_pub = self.create_publisher(Airquality, '/air_quality', 10)
+        self.airquality_pub = self.create_publisher(Airquality, '/air_quality', 200)
+        self.speakmovement_pub = self.create_publisher(Speakmovement, '/speak_movement', 200)
 
     def cmd_vel_callback(self, msg):
         packet = {
@@ -55,6 +56,9 @@ class UdpGatewayAGX(Node):
                 elif msg_type == "airquality":
                     self.get_logger().info(f"Dust: {msg['dust']} ug/m3, Gas: {msg['gas']} ppm, Temp: {msg['temp']} °C")
                     self.publish_airquality(msg)
+                    
+                elif msg_type == "speakmovement":
+                    self.publish_speakmovement(msg)
                 else:
                     self.get_logger().warn(f"Unknown message type: {msg_type}")
             except Exception as e:
@@ -101,6 +105,12 @@ class UdpGatewayAGX(Node):
         aq.dust_ug_per_m3 = msg.get("dust", 0)
         aq.gas_ppm = msg.get("gas", 0)
         aq.temperature_celsius = msg.get("temp", 0.0)
+        self.airquality_pub.publish(aq)
+        
+    def publish_speakmovement(self, msg):
+        speak_movement = Speakmovement()
+        speak_movement.linear = msg.get("linear", 0)
+        speak_movement.angular = msg.get("angular", 0)
         self.airquality_pub.publish(aq)
 
 
